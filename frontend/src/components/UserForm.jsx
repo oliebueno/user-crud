@@ -44,7 +44,7 @@ const UserForm = ({ onSubmit, initialData }) => {
   };
 
   const isNameValid = (name) => {
-    return name.length > 3 && name.length < 200; // El nombre debe tener más de 3 y menos de 200 caracteres
+    return name.length > 3 && name.length < 200;
   };
 
   const handleSubmit = (e) => {
