@@ -48,8 +48,8 @@ const Users = () => {
           <option value="">Todas las Categorías</option>
           <option value="amigo">Amigo</option>
           <option value="compañero">Compañero</option>
-          <option value="superAmigo">SuperAmigo</option>
-          <option value="bloqueado">Bloqueado</option>
+          <option value="superAmigos">SuperAmigos</option>
+          <option value="bloqueados">Bloqueados</option>
         </select>
 
         <select onChange={(e) => setOrder(e.target.value)} className="border p-2">
