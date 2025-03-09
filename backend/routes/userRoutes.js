@@ -31,19 +31,21 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Obtener todos los usuarios
+// Obtener todos los usuarioss
 router.get('/', async (req, res) => {
     const { page = 1, category, order = 'ASC' } = req.query;
     const limit = 5;
     const offset = (page - 1) * limit;
 
     let query = 'SELECT * FROM users';
+    let countQuery = 'SELECT COUNT(*) FROM users';
     let params = [];
-    const validCategories = ['amigo', 'compañero', 'superAmigo', 'bloqueado'];
+    const validCategories = ['amigo', 'compañero', 'superAmigos', 'bloqueados'];
 
     // Filtrar por categoría
     if (category && validCategories.includes(category)) {
         query += ' WHERE categoria = $1';
+        countQuery += ' WHERE categoria = $1';
         params.push(category);
     }
 
@@ -59,15 +61,14 @@ router.get('/', async (req, res) => {
 
     try {
         const result = await pool.query(query, params);
-        // Página sin usuarios
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron usuarios en esta página' });
-        }
-        res.json(result.rows);
+        const countResult = await pool.query(countQuery, params.slice(0, params.length - 2));
+        const totalCount = parseInt(countResult.rows[0].count, 10);
+        res.status(200).json({ users: result.rows, totalPages: Math.ceil(totalCount / limit) });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 
 // Obtener un usuario
