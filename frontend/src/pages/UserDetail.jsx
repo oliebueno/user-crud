@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import DeleteConfirmation from '../components/DeleteConfirmation';
 
 const UserDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,15 +23,16 @@ const UserDetail = () => {
   }, [id]);
 
   const handleDelete = async () => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      try {
-        await axios.delete(`http://localhost:3000/users/${id}`);
-        navigate('/users');
-      } catch (error) {
-        console.error('Error al eliminar usuario:', error);
-      }
+    try {
+      await axios.delete(`http://localhost:3000/users/${id}`);
+      navigate('/users');
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
     }
   };
+
+  const openConfirmationDialog = () => setShowConfirmation(true);
+  const closeConfirmationDialog = () => setShowConfirmation(false);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -51,7 +54,7 @@ const UserDetail = () => {
                 Editar
               </button>
               <button
-                onClick={handleDelete}
+                onClick={openConfirmationDialog}
                 className="bg-red-500 text-white px-4 py-2 rounded"
               >
                 Eliminar
@@ -60,6 +63,13 @@ const UserDetail = () => {
           </div>
         ) : (
           <p className="text-center">Cargando usuario...</p>
+        )}
+        {showConfirmation && (
+          <DeleteConfirmation
+            message="¿Estás seguro de que deseas eliminar este usuario?"
+            onConfirm={handleDelete}
+            onCancel={closeConfirmationDialog}
+          />
         )}
       </div>
     </div>

@@ -47,6 +47,11 @@ const UserForm = ({ onSubmit, initialData }) => {
     return name.length > 3 && name.length < 200;
   };
 
+  const isYearValid = (year) => {
+    const currentYear = new Date().getFullYear();
+    return parseInt(year, 10) <= currentYear;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -65,6 +70,12 @@ const UserForm = ({ onSubmit, initialData }) => {
     // Validar correo electrónico
     if (!isEmailValid(user.email)) {
       setError('El correo debe ser de dominio hotmail.com o gmail.com.');
+      return;
+    }
+
+    // Validar año
+    if (!isYearValid(user.born_year)) {
+      setError('El año de nacimiento no puede ser mayor que el año actual.');
       return;
     }
 
@@ -134,4 +145,3 @@ const UserForm = ({ onSubmit, initialData }) => {
 };
 
 export default UserForm;
-
